@@ -1,6 +1,6 @@
 # XML
 
-![](E:\JavaWeb\筆記\images\1681452257379.png)
+![](images\1681452257379.png)
 
 > Extendsible Markup Language（可扩展标记语言）由 W3C 組織發布，目前推薦遵守的是 W3C 組織於 2000 發布的 XML1.0 規範。
 >
@@ -17,8 +17,6 @@
 - XML 的使命，就是**以一個統一的格式，組織有關係的數據，為不同平台下的應用程序服務**。
 
 - 我们不同的平台有他自己的数据格式，但是不同平台之间如果相互想传递数据，那么就应该用同一种数据格式，这样大家都能读懂。就像加入 WTO 组织的各个国家一样。每个国家都有自己的语言和货币，但是如果大家都用自己的东西就很难沟通和衡量那么我们就使用统一的方式，使用英语作为交流语言，使用美元作为货币标准。
-
-<img src="E:\JavaWeb\筆記\images\螢幕擷取畫面 2024-04-30 141458.png" style="zoom:50%;" />
 
 - 主要用途 : XML 就是一種數據保存的格式而已，按照他的規則你就知道數據之間的歸系。XML 經常用在下面的情況之中。
   - 配置文件 
@@ -73,36 +71,237 @@ atguigu.jdbc.password=root
 ```
 
 # XML的基本语法
-
-+ XML 的基本语法和 HTML 的基本语法简直如出一辙。其实这不是偶然的，XML 基本语法 + HTML 约束 = HTML语法。在逻辑上 HTML 确实是 XML 的子集。
-
+- XML 的基本语法和 HTML 的基本语法简直如出一辙。其实这不是偶然的，XML 基本语法 
+-  HTML 约束 = HTML语法。在逻辑上 HTML 确实是 XML 的子集。
 - XML 文档声明 : 这部分基本上就是固定格式，要注意的是文档声明一定要从第一行第一列开始写
 
-  - ```xml
-    <!-- 
-    1. version 是版本号
-    2. encoding 是 xml 的文件编码
-    3. 注意 `<?xml` 要连在一起写，否则会有报错，錯誤寫法 : `< ?xml`
-    -->
-    <?xml version="1.0" encoding="UTF-8"?>
-    ```
+## 🌟 XML 基本語法概念
+### 1. 文件宣告（可選，但推薦加）
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+```
+- 必須放在檔案最上面第一行。
+- version 是 XML 的版本（目前通常是 1.0）。
+- encoding 指定字元編碼，常用 UTF-8。
 
--   根标签
-    
-    -   &#x20;根标签有且只能有一个。
--   标签关闭
-    -   双标签：开始标签和结束标签必须成对出现。
-    -   单标签：单标签在标签内关闭。
--   标签嵌套
-    
-    -   可以嵌套，但是不能交叉嵌套。
--   注释不能嵌套
--   标签名、属性名建议使用小写字母
--   属性
-    -   属性必须有值
-    -   属性值必须加引号，单双都行
+### 2. 根元素
+> 必須且只能有一個根元素！
 
-**範例**
+**✅ 正確範例：**
+```xml
+<students>
+    <student>...</student>
+</students>
+```
+
+**❌ 錯誤範例（有兩個根）：**
+```xml
+<students>...</students>
+<teachers>...</teachers>
+```
+（錯，外層只能有一個最頂層標籤）
+
+#### ➔ 什麼是根元素？
+> 沒有父元素、最外層、唯一一個 → 叫根元素（Root Element）。
+
+### 3. 标签关闭
+![](images\雙標籤和單標籤.png)
+
+#### ➔ 雙標籤（成對出現）
+![](images\XML標籤一定要閉合.png)
+
+> 每個開始標籤 <tag> 都要有一個對應的結束標籤 </tag>。
+
+**範例：**
+```xml
+<name>张三</name>
+```
+
+#### ➔ 單標籤（自閉合）
+> 沒有內容的元素可以直接自閉合，用 `/`。
+
+**範例：**
+```xml
+<br/>
+```
+
+**或者**
+```xml
+<photo src="image.png" />
+```
+
+### 4. 标签嵌套
+> 可以嵌套，但不能交叉嵌套！
+
+**✅ 正確嵌套：**
+```xml
+<student>
+    <name>张三</name>
+</student>
+```
+
+**❌ 錯誤交叉嵌套（絕對會報錯）：**
+```xml
+<student>
+    <name>张三
+</student></name>
+```
+
+### 5. 注释不能嵌套
+XML 中的註解格式是這樣：
+
+```xml
+<!-- 這是註解 -->
+```
+> 不能在一個註解內再寫另一個註解！
+
+**❌ 錯誤範例（註解嵌套）：**
+```xml
+<!-- 這是註解 <!-- 這也是註解 --> -->
+```
+>（這樣會直接報錯）
+
+### 6. 标签名、属性名建議使用小寫字母
+> 雖然 XML 語法不強制，但業界習慣是用小寫。
+
+**範例（推薦）：**
+
+```xml
+<student id="1">
+    <name>张三</name>
+</student>
+```
+
+**而不是像這樣（不建議）：**
+```xml
+<Student Id="1">
+    <Name>张三</Name>
+</Student>
+```
+
+### 7. 屬性
+#### ➔ 屬性必須有值
+**❌ 錯誤範例：**
+```xml
+<student id>
+```
+
+**✅ 正確範例：**
+```xml
+<student id="1">
+```
+#### ➔ 屬性值必須加引號（單引號或雙引號皆可）
+**範例：**
+```xml
+<student id="1" name='张三'>
+```
+>（雙引號、單引號都可以，但要一致且配對正確）
+
+### 8. 標籤名不能包含空格
+![](images\標籤名不能包含空格.png)
+#### ❌ 錯誤範例：
+```xml
+<student name>张三</student name>
+```
+>（標籤名 student name 有空格，是錯的）
+
+#### ✅ 正確範例：
+```xml
+<studentname>张三</studentname>
+```
+或
+```xml
+<student_name>张三</student_name>
+```
+
+### 9. XML 屬性必須用引號引起來
+![](images\XML屬性必須用引號引起來.png)
+
+#### ✅ 正確範例：
+```xml
+<student id="1" name="张三"/>
+```
+
+#### ❌ 錯誤範例：
+```xml
+<student id=1 name=张三/>
+```
+>（屬性值不能裸寫，一定要有引號）
+
+### 10. 標籤大小寫敏感
+![](images\標籤大小寫敏感.png)
+
+> <name> 和 <Name> 是不同的元素！
+
+#### 範例：
+```xml
+<name>张三</name> <!-- OK -->
+<Name>张三</Name> <!-- OK，但注意這是不同名字 -->
+```
+
+>（不要混用大小寫）
+
+### 11. 標籤閉合位置不正確
+![](images\標籤閉合位置不正確.png)
+
+#### ❌ 錯誤範例（閉錯位置）：
+```xml
+<student>
+    <name>张三
+</student>
+</name>
+```
+
+#### ✅ 正確範例：
+```xml
+<student>
+    <name>张三</name>
+</student>
+```
+
+### 12. 特殊字符
+- ![](images\特殊字符.png)
+
+> 某些符號不能直接出現，必須用轉義字元表示：
+
+| 字元 | 轉義寫法 |\
+|---|---|
+| <	| &lt; |
+| >	| &gt; |
+| &	| &amp; |
+| '	| &apos; |
+| "	| &quot; |
+
+#### 範例：
+```xml
+<message>5 &lt; 10</message>
+```
+
+>（顯示結果是：5 < 10）
+
+### 13. 不能以數字打頭
+![](images\不能以數字打頭.png)
+
+> 標籤名不能以數字開頭。
+
+#### ❌ 錯誤範例：
+```xml
+<123student>张三</123student>
+```
+
+#### ✅ 正確範例：
+```xml
+<student123>张三</student123>
+```
+
+或
+
+```xml
+<_123student>张三</_123student>
+```
+>（可以用底線開頭）
+
+## 範例
 
 ```xml
 <!-- xml声明 version是版本的意思   encoding是编码  -->
@@ -124,341 +323,14 @@ atguigu.jdbc.password=root
 </books>
 ```
 
-# XML 規則
-
-- 標籤名不能包含空格
-  - ![](E:\JavaWeb\筆記\images\標籤名不能包含空格.png)
-
-- 雙標籤和單標籤
-  - ![](E:\JavaWeb\筆記\images\雙標籤和單標籤.png)
-- XML屬性必須用引號引起來
-  - ![](E:\JavaWeb\筆記\images\XML屬性必須用引號引起來.png)
-- XML標籤一定要閉合
-  - ![](E:\JavaWeb\筆記\images\XML標籤一定要閉合.png)
-- 標籤大小寫敏感
-  - ![](E:\JavaWeb\筆記\images\標籤大小寫敏感.png)
-- 標籤閉合位置不正確
-  - ![](E:\JavaWeb\筆記\images\標籤閉合位置不正確.png)
-- 根元素
-  - 根元素就是頂級元素，沒有父標籤的元素叫頂級元素；根元素是沒有父標籤的頂級元素，而且是唯一一個才行。
-  - ![](E:\JavaWeb\筆記\images\根元素.png)
-- 特殊字符
-  - ![](E:\JavaWeb\筆記\images\特殊字符.png)
-- 不能以數字打頭
-  - ![](E:\JavaWeb\筆記\images\不能以數字打頭.png)
-
 # 文本区域（CDATA 区）
 
 > CDATA 语法可以告诉 xml 解析器，我 CDATA 里的文本内容只是纯文本，不需要 xml 语法解析。
 
-- 語法格式 : 
-
-  - ```XML
-    <![CDATA[這裡可以把你輸入的字符原樣顯示，不會被解析]]>
-    ```
-
-![](E:\JavaWeb\筆記\images\文本区域.png)
-
-# XML的约束 (稍微了解)
-
-- [xml约束的概念](https://www.cnblogs.com/cplinux/p/9734688.htmlhttps://www.cnblogs.com/cplinux/p/9734688.html)
-- [XML 约束](https://cloud.tencent.com/developer/article/2343201)
-
-> 一个 XML 文档一旦有了约束，那么这个 XML 文档就只能使用约束中创建的元素及属性。
->
-> 如果约束没有创建 `<a>` 元素，那么 XML 文档就不能使用 `<a>` 元素。
-
-XML 有两种约束：DTD 和 Schema，这二者都是用来描述 XML 文档结构，限定文档的数据类型的， 只是做法上不一样。
-
-DTD 和 XML Schema 之间的关键区别在于 XML Schema 使用基于 XML 的语法，而 DTD 具有从 SGML DTD 保留的独特语法。虽然 DTD 经常因为需要学习新的语法而受到批评，但语法本身非常简洁。XML Schema 则相反，它很冗长，但也使用标签和 XML，因此 XML 的作者应该发现 XML Schema 的语法不那么令人生畏。
-
-## DTD 约束
-
->DTD : 文档类型定义（Document Type Definition）是一套关于标记符的语法规则。
-
-DTD 主要分为内部定义和外部定义：
-
-内部 DTD 的定义，需要在顶部加入，语法如下:
-
-```xml-dtd
-<!DOCTYPE 根元素 [元素声明]>
+**語法格式:**
+```XML
+<![CDATA[這裡可以把你輸入的字符原樣顯示，不會被解析]]>
 ```
-
-### （一）把 dtd 约束直接写到 xml 文档中
-
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE users[
-    <!ELEMENT users (user+) >    
-    <!ELEMENT user (name,age,addr) >    
-    <!ELEMENT name (#PCDATA) >    
-    <!ELEMENT age (#PCDATA) >    
-    <!ELEMENT addr (#PCDATA) >    
-]>
-<users>
-    <user>
-        <name>zhangsan</name>
-        <age>23</age>
-        <addr>shanghai</addr>
-    </user>
-    <user>
-        <name>lisi</name>
-        <age>24</age>
-        <addr>beijing</addr>
-    </user>
-</users>
-```
-
-### （二）在 xml 文档中引用一个外部的 dtd 约束文档(dtd约束文档以.dtd作用扩展名)，
-
-- 外部引用又包括两种
-  - 一种是 SYSTEM 系统外部约束文档，也就是 xml 文档和 dtd 约束文档都在同一台机器上，
-  - 一种是 PUBLIC 公共外部约束文档，也就是 xml 文档和 dtd 约束文档不在同一台机器上，需要通过网络把dtd 文档下载到本地
-
-**引用形式如下 :**
-
-```xml
-<!DOCTYPE 根元素 SYSTEM "dtd文件路径">
-<!DOCTYPE 根元素 PUBLIC "dtd文件的描述信息" "dtd的url">
-```
-
-**SYSTEM 系统外部约束文档示例**
-
-**note.dtd**
-
-```xml-dtd
-<?xml version="1.0" encoding="UTF-8"?>
-<!ELEMENT note (to,from,heading,body) >    
-<!ELEMENT to (#PCDATA) >    
-<!ELEMENT from (#PCDATA) >    
-<!ELEMENT heading (#PCDATA) >    
-<!ELEMENT body (#PCDATA) >    
-```
-
-**note.xml**
-
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE note SYSTEM "note.dtd">
-<note>
-	<to>Tove</to>
-	<from>Jani</from>
-	<heading>Reminder</heading>
-	<body>Don't forget me this weekend!</body>
-</note>
-```
-
-**PUBLIC 公共外部约束文档示例**
-
-<img src="E:\JavaWeb\筆記\images\683560-20190502213356534-1266758955.jpg" style="zoom:50%;" />
-
-```xml
-<!DOCTYPE mapper  
-  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-```
-
-> DOCTYPE 后面的 mapper 就是整个 xml 的根标签，PUBLIC 表示引用的 dtd 约束是一个公共约束
-
-## shema 约束
-
-> 同 DTD 一样，XML Schema（XML Schema Definition，XSD，XML Schema定义）也是一种用于定义和描述 XML 文档结构与内容的模式语言，它的出现克服了 DTD 的局限性。
-
-### Schema 较 DTD 的优点
-
-通过 XML Schema 与 DTD 的比较，将 XML Schema 所具有的一些显著优点进行列举，具体如下：
-
-1. DTD 采用的是非 XML 语法格式，缺乏对文档结构、元素、数据类型等全面的描述。而 XML Schema 采用的是 XML 语法格式，而且它本身也是一种 XML 文档，因此，XML Schema 语法格式比 DTD 更好理解；
-2. XML 有非常高的合法性要求，虽然 DTD 和 XML Schema 都用于对 XML 文档进行描述，都被用作验证 XML 合法性的基础。但是， DTD 本身合法性的验证必须采用另外一套机制，而 XML Schema 则采用与 XML 文档相同的合法性验证机制；
-3. XML Schema 对名称空间支持得非常好，而 DTD 几乎不支持名称空间；
-4. DTD 支持的数据类型非常有限。例如，DTD 可以指定元素中必须包含字符文本（PCDATA），但无法指定元素中必须包含非负整数，而 XML Schema 比 DTD 支持更多的数据类型，包括用户自定义的数据类型；
-5. DTD 定义约束的能力非常有限，无法对 XML 实例文档作出更细致的语义限制，例如，无法很好地指定一个元素中的某个子元素必须出现 7-12 次；而 XML Schema 定义约束的能力非常强大，可以对 XML 实例文档作出细致的语义限制。
-
-通过上面的比较可以发现，XML Schema 的功能比 DTD 强大很多，但相应的语法也比DTD复杂很多。Schema 是基于 XML 编写的，XML Schema 约束文件本身就是一个 XML 文档（文件后缀名为.xsd），文件内的代码要符合 XML 语法规范。
-
-### Schema 名称空间
-
-一个 XML 文档可以引入多个 Schema 约束文档，但是，由于约束文档中的元素或属性都是自定义的，因此，在 XML 文档中，极有可能出现代表不同含义的同名元素或属性，导致名称发生冲突。为此，在 XML 文档中，提供了名称空间，它可以唯一标识一个元素或者属性。
-
-这就好比咱们系有两个同名的同学，如果老师要找那个同学，就得给他们的名字前面加个前缀，XXX 班的某某某。这个 “XXX班” 就相当于一个名称空间。
-
-在使用名称空间时，首先必须声明名称空间。名称空间的声明就是在 XML 实例文档中为某个模式文档的名称空间指定一个临时的简写名称（起个别名），它通过一系列的保留属性来声明，这种属性的名字必须是以 `xmlns` 或者以 `xmlns:` 作为开始。它与其它任何 XML 属性一样，都可以通过直接或者使用默认的方式给出。
-
-名称空间声明的语法格式如下所示：
-
-```xml
-<元素名称 xmlns:prefixname="URI">
-```
-
-在上述语法格式中，元素名称指的是在哪一个元素上声明名称空间，在这个元素上声明的名称空间适用于声明它的元素和属性，以及该元素中嵌套的所有元素及其属性。`xmlns:prefixname` 指的是该元素的属性名，它所对应的值是一个 URI 引用，用来标识该名称空间的名称。
-
-我们来修改 bookShelf.xml 文件：
-
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<xs:書架 xmlns:xs="http://www.example.org/book/schema"
-xmlns="http://www.w3.org/2001/XMLSchema-instance">
-    <xs:書>
-        <xs:書名>深入理解Java虚拟机</xs:書名>
-        <xs:書名>129.00</xs:書名>
-    </xs:書>
-</xs:書架>
-```
-
-名称空间的使用就是将一个前缀（xs）绑定到代表某个名称空间的 `URI（http://www.example.org/book/schema）`上。
-
-然后将前缀添加到元素名称前面来说明该元素属于哪个 Schema 文档。
-
-如果一个 XML 文档有很多元素，而且这些元素都在同一个名称空间，这时，给每个元素名称都添加一个前缀将是一件非常烦琐的事情。
-
-这时，可以使用默认的名称空间，默认名称空间声明时不需要加 “别名”，使用这些元素时，也不用加前缀。
-
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<書架 xmlns="http://www.example.org/book/schema">
-    <書>
-        <書名>深入理解Java虚拟机</書名>
-        <售價>129.00</售價>
-    </書>
-</書架>
-```
-
-### Schema 引入约束
-
-> 如果想通过 XML Schema 文件对某个 XML 文档进行约束，必须将 XML 文档与 Schema 文件进行关联。在 XML 文档中引入 Schema 文件有两种方式：
->
-> 1. 使用名称空间引入 Schema
-> 2. 不使用名称空间引入 Schema
-
-#### 使用名称空间引入Schema
-
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<schema xmlns="http://www.w3.org/2001/XMLSchema" 
-    targetNamespace="http://www.itcast.org/book" 
-    elementFormDefault="qualified">
-    <element name="books">
-        <complexType>
-            <sequence>
-                <element name="book">
-                    <complexType>
-                        <sequence>
-                            <element name="name"></element>
-                            <element name="author"></element>
-                            <element name="price"></element>
-                        </sequence>
-                    </complexType>
-                </element>
-            </sequence>
-        </complexType>
-    </element>
-</schema>
-```
-
-> 在定义 Schema 文件的时候，由于这个 Schema 文件本身就是 xml，它也要受到别的约束。而这个约束是W3C 组织提前定义好的，在 Schema 文件中需要提前引入进来在根标签中使用属性进行进入：
->
-> - `xmlns="http://www.w3.org/2001/XMLSchema"`   引入 W3C 定义的 schema 书写的约束
-> - `targetNamespace="http://www.itcast.org/book"` 给当前的 Schema 文件起名字（命名空间），
->   作用是当哪个 xml 要引入这个 schema 约束的时候，必须通过当前 targetNamespace 后面书写的 uri 地址来引入
-
-在 xml 文件中引入当前的这个 Schema
-
-schema instance（schema 实例），这个概念类似于类实例（对象），`http://www.w3.org/2001/XMLSchema-instance` 这个定义 schema 约束文件的元约束文件的命名空间，通过这个元约束的命名空间定义的 schema 约束文件就是 schema 实例。也就是说 schema 实例其实就是schema 约束文件，就像类实例就是类对象一样。
-
-```xml
-<books xmlns="http://www.itcast.org/book"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.itcast.org/book book.xsd">
-	<book>
-		<name>JavaWeb</name>
-		<author>老王</author>
-		<price>182</price>
-	</book>
-</books>
-```
-
-我们需要在 XML 文档中的根节点中使用 schemaLocation 属性来指定 Schema 文件。schemaLocation 属性有两个值：
-
-第一个值是需要使用的名称空间。
-
-第二个值是供命名空间使用的 XML Schema 文件的路径。
-
-两者之间用空格分隔。
-
-> 1. `http://www.itcast.org/book"`   它是 schema 文件中的 targetNamespace 属性的值
-> 2. `xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"`   说明当前的 xml 是 schema 一个实例文档，其真正的含义是 xml schema instances 命名空间，也就是所有的 shema 实例都在这里面，是和下面的 sxi:shemaLocation进行绑定的
-> 3. `xsi:schemaLocation="http://www.itcast.org/book book.xsd">`   这个是在引入当前的 schema 文件的真实路径
-
-在每个 xml 文件中，我们都会看到  `xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"` 这个命名空间是实例命名空间，我们在 xml 中引入的 schema 实例，都必须和 `"http://www.w3.org/2001/XMLSchema-instance"` 进行绑定，绑定是通过一个前缀进行绑定。在 books.xml 中，这个前缀是 xsi 。
-
-![](E:\JavaWeb\筆記\images\683560-20190502230250653-297454263.jpg)
-
-上图未没有进行绑定，报错信息如下：
-
-The prefix "test" for attribute "test:schemaLocation" associated with an element type "books" is not bound.
-
-books 元素的 "test:schemaLocation" 属性的前缀没有绑定
-
-其实 schema 实例命名空间的前缀可以修改，例如把前缀修改成 test，那么上图就不会报错，示例如下图
-
-![](E:\JavaWeb\筆記\images\683560-20190502230143947-2145444919.jpg)
-
-
-
-**描述约束的文件以 .xsd为扩展名，在 xml 中引入多个 shema 的约束如下**
-
-```xml
-<beans xmlns="http://www.springframework.org/schema/beans"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.springframework.org/schema/beans 
-    http://www.springframework.org/schema/beans/spring-beans.xsd
-    http://www.springframework.org/schema/context
-    http://www.springframework.org/schema/context/spring-context.xsd"> 
-</beans>
-```
-
-在引入 shema 约束时，并没有再另外使用新的标签(DTD约束使用<!DOCTYPE>标签引入约束)，而是在根标签中使用 xmlns 属性来引入约束，xmlns 是 xml namespace 的简写。并通过 xsi:schemaLocation="" 把 schema 约束的位置进行指定，一般情况下会按照指定的位置到网络中下载约束文件，如果没有网络，需要自己指定本地约束文件。
-
-#### 不使用名称空间引入 Schema
-
-如果 book.xsd 与引用它的 XML 文件位于同一个目录中，我们可以不使用名称空间来引入 Schema，book.xsd 中不需要定义 targetNamespace（目标名称空间）了，book.xsd 代码：
-
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<schema xmlns="http://www.w3.org/2001/XMLSchema" 
-    elementFormDefault="qualified">
-    <element name="books">
-        <complexType>
-            <sequence>
-                <element name="book">
-                    <complexType>
-                        <sequence>
-                            <element name="name"></element>
-                            <element name="author"></element>
-                            <element name="price"></element>
-                        </sequence>
-                    </complexType>
-                </element>
-            </sequence>
-        </complexType>
-    </element>
-</schema>
-```
-
-修改 book.xml 文件，在 book.xml 中也不需要指定默认名称空间了。
-
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<书架 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:noNamespaceSchemaLocation="book.xsd">
-    <书>
-        <书名>深入理解Java虚拟机</书名>
-        <售价>129.00</售价>
-    </书>
-</书架>
-```
-
-> noNamespaceSchemaLocation 是一个在标准名称空间（`http://www.w3.org/2001/XMLSchema-instance`）里面定义好的属性，用于指定 book.xsd 文档位置。
 
 # XML 解析
 
@@ -500,48 +372,66 @@ books 元素的 "test:schemaLocation" 属性的前缀没有绑定
 
 1.  创建 SAXReader对象
 
-```java
-SAXReader saxReader = new SAXReader();
-```
+    ```java
+    SAXReader saxReader = new SAXReader();
+    ```
 
 2. 解析 XML 获取 Document 对象 : 需要传入要解析的 XML 文件的字节输入流
 
-```java
-Document document = reader.read(inputStream);
-```
+    ```java
+    Document document = reader.read(inputStream);
+    ```
 
 3. 获取文档的根标签
 
-```java
-Element rootElement = documen.getRootElement()
-```
+    ```java
+    Element rootElement = documen.getRootElement()
+    ```
 
 4. 获取标签的子标签
 
-```java
-//获取所有子标签
-List<Element> sonElementList = rootElement.elements();
+    ```java
+    //获取所有子标签
+    List<Element> sonElementList = rootElement.elements();
 
-//获取指定标签名的子标签
-List<Element> sonElementList = rootElement.elements("标签名");
-```
+    //获取指定标签名的子标签
+    List<Element> sonElementList = rootElement.elements("标签名");
+    ```
 
 5. 获取标签体内的文本
 
-```java
-String text = element.getText();
-```
+    ```java
+    String text = element.getText();
+    ```
 
 6. 获取标签的某个属性的值
 
-```java
-String value = element.attributeValue("属性名");
-```
+    ```java
+    String value = element.attributeValue("属性名");
+    ```
 
 ## 使用 dom4j 技術讀取 XML 文件得到 Document 對象
 
 > document 对象表示的是整个文档（可以是 html 文档，也可以是 xml 文档）
 
+### students.xml:
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<students>
+    <student>
+        <name>张三</name>
+        <age>18</age>
+        <birthDay>2005-01-01</birthDay>
+    </student>
+    <student>
+        <name>李四</name>
+        <age>20</age>
+        <birthDay>2003-02-02</birthDay>
+    </student>
+</students>
+```
+
+### 程式碼
 ```java
 @Test
 public void getDocument() throws DocumentException {
@@ -593,7 +483,7 @@ public void readXML() throws DocumentException {
         Element ageElement = student.element("age");
         // 再通过 getText() 方法拿到起始标签和结束标签之间的文本内容
         System.out.println("學生:" + nameElement.getText() + " , 生日:" + birthDayElement.getText() + ", 年齡："
-                           + ageElement.getText());
+                            + ageElement.getText());
     }
 }
 ```
