@@ -1213,7 +1213,7 @@ public class ServletForward2 extends HttpServlet {
 
 ### 打开浏览器，输入以下 url 测试
 ``` http
-http://localhost:8080/Servlet/servletForward1?username=atguigu
+http://localhost:8080/工程名/servletForward1?username=atguigu
 ```
 
 ## 12.3 响应重定向
@@ -1301,22 +1301,17 @@ http://localhost:8080/工程名/servletForward1?username=atguigu
 
 # 13. web 乱码
 ## 13.1 乱码问题
-
 - 乱码问题产生的根本原因是什么
   - 数据的编码和解码使用的不是同一个字符集
   - 使用了不支持某个语言文字的字符集
 
-**各个字符集的兼容性如下**
-
-
-
+### 各个字符集的兼容性如下*
 <img src="images/1682326867396.png" alt="1682326867396" style="zoom:80%;" />
 
 + 由上图得知，上述字符集都兼容了 ASCII
 + ASCII 中有什么  →  英文字母和一些通常使用的符号，所以这些东西无论使用什么字符集都不会乱码
 
 ## 13.2 HTML 乱码问题
-
 > 当前视图文件的字符集通过<meta charset="UTF-8"> 来告知浏览器通过什么字符集来解析当前文件
 
 ``` html
@@ -1333,10 +1328,9 @@ http://localhost:8080/工程名/servletForward1?username=atguigu
 ```
 
 ## 13.3 请求乱码问题
-
 > 參考文章 : [Servlet中的乱码问题及解决办法](https://www.cnblogs.com/lijie0609/p/11825000.html)
 
-### 针对 POST 提交方式的解决方案
+### 13.3.1 针对 POST 提交方式的解决方案
 
 假设现在有个 form 表单，当页面中提交一个包含中文的请求时，在服务端有可能出现中文乱码问题
 
@@ -1360,11 +1354,12 @@ http://localhost:8080/工程名/servletForward1?username=atguigu
 </html>
 ```
 
-**乱码的产生原因 : **
+#### 乱码的产生原因 : 
+HTTP 协议中规定，数据的传输采用字节编码方式，即无论浏览器提交的数据所包含的中文是什么字符编码格式，一旦由浏览器经过 HTTP 协议传输，则这些数据均将以字节的形式上传给服务器。这是因为 HTTP 协议的底层使用的是 TCP 传输协议。TCP（Transmission Control Protocol）是一种面向连接的、可靠的、基于字节流的、端对端的通信协议。在请求中，这些字节均以百分号开头，并以十六进制形式出现，例如 `%5A%3D` 等。
 
-HTTP 协议中规定，数据的传输采用字节编码方式，即无论浏览器提交的数据所包含的中文是什么字符编码格式，一旦由浏览器经过 HTTP 协议传输，则这些数据均将以字节的形式上传给服务器。这是因为 HTTP 协议的底层使用的是 TCP 传输协议。TCP（Transmission Control Protocol）是一种面向连接的、可靠的、基于字节流的、端对端的通信协议。在请求中，这些字节均以百分号开头，并以十六进制形式出现，例如 %5A%3D 等。
+当用户通过浏览器提交一个包含 UTF 8 编码格式的两个字的中文请求时，浏览器会将这两个中文字符变为六个字节（一般一个 UTF 8 汉字占用三个字节），即形成六个类似 `%8E` 的字节表 示形式，并将这六个字节上传至 Tomcat 服务器。
 
-当用户通过浏览器提交一个包含 UTF 8 编码格式的两个字的中文请求时，浏览器会将这两个中文字符变为六个字节（一般一个 UTF 8 汉字占用三个字节），即形成六个类似 %8E 的字节表 示形式，并将这六个字节上传至 Tomcat 服务器。Tomcat 服务器在接收到这六个字节后，并不知道它们原始采用的是什么字符编码。而 Tomcat 默认的编码格式为 ISO 8859-1 。所以会将这六个字节按照 ISO 8859-1 的格式进行编码，这种编码方式不支持中文，这样就出现了乱码。
+Tomcat 服务器在接收到这六个字节后，并不知道它们原始采用的是什么字符编码。而 Tomcat 默认的编码格式为 `ISO 8859-1` 。所以会将这六个字节按照 `ISO 8859-1` 的格式进行编码，这种编码方式不支持中文，这样就出现了乱码。
 
 ![](images\螢幕擷取畫面 2024-05-01 214117.png)
 
@@ -1374,7 +1369,17 @@ HTTP 协议中规定，数据的传输采用字节编码方式，即无论浏览
 request.setCharacterEncoding("UTF-8");
 ```
 
-**範例程式碼 :**
+#### 範例程式碼 :
+```xml
+<servlet>
+    <servlet-name>ParameterServlet</servlet-name>
+    <servlet-class>com.atguigu.servlet.ParameterServlet</servlet-class>
+</servlet>
+<servlet-mapping>
+    <servlet-name>ParameterServlet</servlet-name>
+    <url-pattern>/parameterServlet</url-pattern>
+</servlet-mapping>
+```
 
 ```java
 package com.atguigu.servlet;
@@ -1414,15 +1419,14 @@ public class ParameterServlet extends HttpServlet {
 }
 ```
 
-### 针对 GET 提交方式的解决方案
-
+### 13.3.2 针对 GET 提交方式的解决方案
 - 对于 GET 方式提交的情况，上述中设 `request.setCharacterEncoding("UTF-8");` 是不会起作用的，因为 GET方式的请求参数是在请求行，目前了解的两种解决方案：
   - Tomcat 的版本影响，我自己试了一下 Tomcat 的 7. x 版本的，什么都不设置的话，会有乱码，但是用 7.x 以上的 Tomcat 服务器8.x、9.x 的版本就不会出现乱码。
   - 当我们以 GET 方式向服务器提交数据的话，在地址栏中，URL 中 URI 部分的参数提交的中文会以字节的方式显示，对于请求路径中所携带参数的解析，由 Tomcat 服务器完成。而 Tomcat 服务器的字符编码默认为 ISO 8859-1 ，所以会将请求路径中所携带的数据，按照 ISO 8859-1 进行编码。
 
 ![](images\1850571-20191109134058439-651169026.png)
 
-这种情况下我们可以通过修改 Tomcat 默认字符编码的方式来解决 GET 提交方式中携带中文的乱码问题。在 Tomcat 安装目录的 conf/server.xml 中，找到端口号为 8080 的 <Connector> 标签，在其中添加 URIEncoding=UTF-8 的设置，即可将 Tomcat 默认字符编码修改为 UTF-8 。
+这种情况下我们可以通过修改 Tomcat 默认字符编码的方式来解决 GET 提交方式中携带中文的乱码问题。在 Tomcat 安装目录的 `conf/server.xml` 中，找到端口号为 8080 的 <Connector> 标签，在其中添加 `URIEncoding=UTF-8` 的设置，即可将 Tomcat 默认字符编码修改为 UTF-8 。
 
 ![](images\1850571-20191109134041224-909336832.png)
 
@@ -1443,19 +1447,17 @@ username = new String(username.getBytes("iso-8859-1"), "UTF-8");
 > - 解码，即解释执行，即组装，对打散的字符按照指定编码组装后进行解释执行。 这里的解码使用的是 String 的带参构造器，完成的工作是：按照原有字符编码将数据组装。该方式针对 POST 与 GET 提交方式，均起作用。
 
 ## 13.4 响应乱码问题
-
 > 參考文章 : [Servlet中的乱码问题及解决办法](https://www.cnblogs.com/lijie0609/p/11825000.html)
 
-产生原因：之所以响应时会产生乱码，是因为 HTTP 协议中规定，默认响应体的字符编码为 ISO-8859-1 。所以，若要解决乱码问题，就需要修改响应体的默认编码。
+> **产生原因：** 之所以响应时会产生乱码，是因为 HTTP 协议中规定，默认响应体的字符编码为 `ISO-8859-1`。所以，若要解决乱码问题，就需要修改响应体的默认编码。
 
-**解決方式一 :**
-
+### 解決方式一 :
 ```java
 resp.setContentType("text/html");//设置MIME类型
 resp.setCharacterEncoding("UTF-8");
 ```
 
-> 修改 MIME 的字符编码，即修改响应体的字符编码。但使用 setCharacterEncoding() 方法的前提是，之前必须要通过使用方法 setContentType() 方法设置响应内容的 MIME 类型。否则 setCharacterEncoding() 方法不起作用。
+> 修改 MIME 的字符编码，即修改响应体的字符编码。但使用 `setCharacterEncoding()` 方法的前提是，之前必须要通过使用方法 `setContentType()` 方法设置响应内容的 MIME 类型。否则 `setCharacterEncoding()` 方法不起作用。
 
 ```java
 package com.atguigu.servlet;
@@ -1492,8 +1494,18 @@ public class ResponseIOServlet extends HttpServlet {
 }
 ```
 
-**解決方式二 :**
+```xml
+<servlet>
+    <servlet-name>ResponseIOServlet</servlet-name>
+    <servlet-class>com.atguigu.servlet.ResponseIOServlet</servlet-class>
+</servlet>
+<servlet-mapping>
+    <servlet-name>ResponseIOServlet</servlet-name>
+    <url-pattern>/responseIOServlet</url-pattern>
+</servlet-mapping>
+```
 
+### 解決方式二 :
 ```java
 resp.setContentType("text/html;charset=UTF-8");
 ```
@@ -1534,6 +1546,18 @@ public class ResponseIOServlet extends HttpServlet {
 }
 ```
 
+```xml
+<servlet>
+    <servlet-name>ResponseIOServlet</servlet-name>
+    <servlet-class>com.atguigu.servlet.ResponseIOServlet</servlet-class>
+</servlet>
+<servlet-mapping>
+    <servlet-name>ResponseIOServlet</servlet-name>
+    <url-pattern>/responseIOServlet</url-pattern>
+</servlet-mapping>
+```
+
+### 總結
 方法一、二是一样的，没啥区别！！！浏览器会根据响应体字符编码，自动调整其对响应体内容的解码方式，即会使用响应体的字符编码显示响应体内容。不过，需要注意一点，这些设置，必须在 PrintWriter 对象产生之前先设置，否则将不起作用。
 
 ![](images\1850571-20191109145949000-34146920.png)
@@ -1553,223 +1577,222 @@ public class ResponseIOServlet extends HttpServlet {
   + 绝对路径的写法中，不以当前资源的所在路径为出发点，所以不会出现  ./ 和 ../
   + 不同的项目和不同的协议下，绝对路径的基础位置可能不同，要通过测试确定
   + 绝对路径的好处就是 : 无论当前资源位置在哪，寻找目标资源路径的写法都一致
+
 + 应用场景
   1. 前端代码中 href、src、action 等属性
   2. 请求转发和重定向中的路径
 
 ## 14.1 前端路径问题
-
 **前端项目结构**
 
-<img src="images\螢幕擷取畫面 2024-05-03 203954.png" style="zoom: 67%;" />
+<img src="images/1682390999417.png" style="zoom: 67%;" />
 
 ### 相对路径情况分析
+#### 相对路径情况 1 : webapp/index.html 中引入 webapp/static/img/logo.png
 
-- 相对路径情况 1 : webapp/index.html 中引入 webapp/static/img/logo.png
+- ```html
+  <!DOCTYPE html>
+  <html>
+  <head>
+  <meta charset="UTF-8">
+  <title>Insert title here</title>
+  </head>
+  <body>
+    <img src="static/img/logo.png">
+  </body>
+  </html>
+  ```
 
-  - ```html
-    <!DOCTYPE html>
-    <html>
-    <head>
-    <meta charset="UTF-8">
-    <title>Insert title here</title>
-    </head>
-    <body>
-    	<img src="static/img/logo.png">
-    </body>
-    </html>
-    ```
+- 访问 index.html 的 url 为 :  `http://localhost:8080/工程名/index.html`
 
-  - 访问 index.html 的 url 为 :  `http://localhost:8080/PathTest/index.html`
+- 当前资源为 :  index.html
 
-  - 当前资源为 :  index.html
+- 当前资源的所在路径为  : `http://localhost:8080/工程名/`
 
-  - 当前资源的所在路径为  : `http://localhost:8080/PathTest/`
+- 要获取的目标资源 url 为 :  `http://localhost:8080/工程名/static/img/logo.png`
 
-  - 要获取的目标资源 url 为 :  `http://localhost:8080/PathTest/static/img/logo.png`
+- index.html 中定义 : `<img src="static/img/logo.png"/>`
 
-  - index.html 中定义 : `<img src="static/img/logo.png"/>`
+- 寻找方式就是在当前资源所在路径 `http://localhost:8080/工程名/` 后拼接 src 属性值 `static/img/logo.png` 正好是目标资源正常获取的 url `http://localhost:8080/工程名/static/img/logo.png`
 
-  - 寻找方式就是在当前资源所在路径 `http://localhost:8080/PathTest/` 后拼接 src 属性值 `static/img/logo.png` 正好是目标资源正常获取的 url `http://localhost:8080/PathTest/static/img/logo.png`
+#### 相对路径情况 2 : webapp/a/b/c/test.html 中引入 webapp/static/img/logo.png
 
-- 相对路径情况 2 : webapp/a/b/c/test.html 中引入 webapp/static/img/logo.png
+- ```html
+  <!DOCTYPE html>
+  <html>
+  <head>
+  <meta charset="UTF-8">
+  <title>Insert title here</title>
+  </head>
+  <body>
+    <!-- ../代表上一层路径 -->
+      <img src="../../../static/img/logo.png">
+  </body>
+  </html>
+  ```
 
-  - ```html
-    <!DOCTYPE html>
-    <html>
-    <head>
-    <meta charset="UTF-8">
-    <title>Insert title here</title>
-    </head>
-    <body>
-    	<!-- ../代表上一层路径 -->
-        <img src="../../../static/img/logo.png">
-    </body>
-    </html>
-    ```
+- 访问 test.html 的 url 为 :  `http://localhost:8080/工程名/a/b/c/test.html`
 
-  - 访问 test.html 的 url 为 :  `http://localhost:8080/PathTest/a/b/c/test.html`
+- 当前资源为: `test.html`
 
-  - 当前资源为 :  test.html
+- 当前资源的所在路径为 : `http://localhost:8080/工程名/a/b/c/`
 
-  - 当前资源的所在路径为 : `http://localhost:8080/PathTest/a/b/c/`
+- 要获取的目标资源 url 为 : `http://localhost:8080/工程名/static/img/logo.png`
 
-  - 要获取的目标资源 url 为 : `http://localhost:8080/PathTest/static/img/logo.png`
+- test.html中定义的了 : `<img src="../../../static/img/logo.png"/>`
 
-  - test.html中定义的了 : `<img src="../../../static/img/logo.png"/>`
+- 寻找方式就是在当前资源所在路径  `http://localhost:8080/工程名/a/b/c/` 后拼接 src 属性值 `../../../static/img/logo.png` ，其中 ../ 可以抵消一层路径，正好是目标资源正常获取的 url `http://localhost:8080/工程名/static/img/logo.png`
 
-  - 寻找方式就是在当前资源所在路径  `http://localhost:8080/PathTest/a/b/c/` 后拼接 src 属性值 `../../../static/img/logo.png` ，其中 ../ 可以抵消一层路径，正好是目标资源正常获取的 url `http://localhost:8080/PathTest/static/img/logo.png`
+#### 相对路径情况 3 : webapp/WEB-INF/views/view1.html 中引入 webapp/static/img/logo.png
+- `view1.html` 在 `WEB-INF` 下，需要通过 Servlet 请求转发获得
 
-- 相对路径情况 3 : webapp/WEB-INF/views/view1.html 中引入 webapp/static/img/logo.png
-  - view1.html 在 WEB-INF 下，需要通过 Servlet 请求转发获得
-
-  - ```java
-    package com.atguigu.servlet;
-    
-    import java.io.IOException;
-    
-    import javax.servlet.RequestDispatcher;
-    import javax.servlet.ServletException;
-    import javax.servlet.annotation.WebServlet;
-    import javax.servlet.http.HttpServlet;
-    import javax.servlet.http.HttpServletRequest;
-    import javax.servlet.http.HttpServletResponse;
-    
-    @WebServlet("/view1Servlet")
-    public class View1Servlet extends HttpServlet {
-    	@Override
-    	protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-    		RequestDispatcher requestDispatcher = req.getRequestDispatcher("WEB-INF/views/view1.html");
-    		requestDispatcher.forward(req, resp);
-    	}
+- ```java
+  package com.atguigu.servlet;
+  
+  import java.io.IOException;
+  
+  import javax.servlet.RequestDispatcher;
+  import javax.servlet.ServletException;
+  import javax.servlet.annotation.WebServlet;
+  import javax.servlet.http.HttpServlet;
+  import javax.servlet.http.HttpServletRequest;
+  import javax.servlet.http.HttpServletResponse;
+  
+  @WebServlet("/view1Servlet")
+  public class View1Servlet extends HttpServlet {
+    @Override
+    protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+      RequestDispatcher requestDispatcher = req.getRequestDispatcher("WEB-INF/views/view1.html");
+      requestDispatcher.forward(req, resp);
     }
-    ```
+  }
+  ```
 
-  - 访问 view1.html 的 url 为  :  `http://localhost:8080/PathTest/view1Servlet`
+- 访问 `view1.html` 的 url 为  :  `http://localhost:8080/工程名/view1Servlet`
 
-  - 当前资源为 :  view1Servlet
+- 当前资源为:  view1Servlet
 
-  - 当前资源的所在路径为 : `http://localhost:8080/PathTest/`
+- 当前资源的所在路径为 : `http://localhost:8080/工程名/`
 
-  - 要获取的目标资源 url 为 :  `http://localhost:8080/PathTest/static/img/logo.png`
+- 要获取的目标资源 url 为 :  `http://localhost:8080/工程名/static/img/logo.png`
 
-  - view1.html 中定义的了    : `<img src="static/img/logo.png"/>`
+- view1.html 中定义的了    : `<img src="static/img/logo.png"/>`
 
-  - 寻找方式就是在当前资源所在路径 `http://localhost:8080/PathTest/` 后拼接 src 属性值 `static/img/logo.png` ，正好是目标资源正常获取的 url  `http://localhost:8080/PathTest/static/img/logo.png`
+- 寻找方式就是在当前资源所在路径 `http://localhost:8080/工程名/` 后拼接 src 属性值 `static/img/logo.png` ，正好是目标资源正常获取的 url  `http://localhost:8080/工程名/static/img/logo.png`
 
-  - ```html
-    <!DOCTYPE html>
-    <html>
-    <head>
-    <meta charset="UTF-8">
-    <title>Insert title here</title>
-    </head>
-    <body>
-    	<img src="static/img/logo.png">
-    </body>
-    </html>
-    ```
+- ```html
+  <!DOCTYPE html>
+  <html>
+  <head>
+  <meta charset="UTF-8">
+  <title>Insert title here</title>
+  </head>
+  <body>
+    <img src="static/img/logo.png">
+  </body>
+  </html>
+  ```
 
 ### 绝对路径情况分析
 
-- 绝对路径情况 1 : webapp/index.html 中引入webapp/static/img/logo.png
-  - 访问 index.html 的 url 为 :  `http://localhost:8080/PathTest/index.html`
+#### 绝对路径情况 1 : webapp/index.html 中引入webapp/static/img/logo.png
+- 访问 index.html 的 url 为 :  `http://localhost:8080/工程名/index.html`
 
-  - 绝对路径的基准路径为 :  `http://localhost:8080`
+- 绝对路径的基准路径为 :  `http://localhost:8080`
 
-  - 要获取的目标资源 url 为 :  `http://localhost:8080/PathTest/static/img/logo.png`
+- 要获取的目标资源 url 为 :  `http://localhost:8080/工程名/static/img/logo.png`
 
-  - index.html 中定义的了 : `<img src="/PathTest/static/img/logo.png">`
+- index.html 中定义的了 : `<img src="/工程名/static/img/logo.png">`
 
-  - 寻找方式就是在基准路径 `http://localhost:8080` 后面拼接 src 属性值 `/PathTest/static/img/logo.png`，得到的正是目标资源访问的正确路径
+- 寻找方式就是在基准路径 `http://localhost:8080` 后面拼接 src 属性值 `/工程名/static/img/logo.png`，得到的正是目标资源访问的正确路径
 
-  - ```html
-    <!DOCTYPE html>
-    <html>
-    <head>
-    <meta charset="UTF-8">
-    <title>Insert title here</title>
-    </head>
-    <body>
-        <!-- 绝对路径写法 -->
-        <img src="/PathTest/static/img/logo.png">
-    </body>
-    </html>
-    ```
+- ```html
+  <!DOCTYPE html>
+  <html>
+  <head>
+  <meta charset="UTF-8">
+  <title>Insert title here</title>
+  </head>
+  <body>
+      <!-- 绝对路径写法 -->
+      <img src="/工程名/static/img/logo.png">
+  </body>
+  </html>
+  ```
 
-- 绝对路径情况 2 : webapp/a/b/c/test.html 中引入 webapp/static/img/logo.png
-  - 访问 test.html 的 url 为 :  `http://localhost:8080/PathTest/a/b/c/test.html`
+#### 绝对路径情况 2 : webapp/a/b/c/test.html 中引入 webapp/static/img/logo.png
+- 访问 test.html 的 url 为:  `http://localhost:8080/工程名/a/b/c/test.html`
 
-  - 绝对路径的基准路径为 :  `http://localhost:8080`
+- 绝对路径的基准路径为:  `http://localhost:8080`
 
-  - 要获取的目标资源 url 为 :  `http://localhost:8080/PathTest/static/img/logo.png`
+- 要获取的目标资源 url 为 :  `http://localhost:8080/工程名/static/img/logo.png`
 
-  - test.html 中定义的了 : `<img src="/PathTest/static/img/logo.png">`
+- test.html 中定义的了 : `<img src="/工程名/static/img/logo.png">`
 
-  - 寻找方式就是在基准路径 `http://localhost:8080` 后面拼接 src 属性值`/PathTest/static/img/logo.png`，得到的正是目标资源访问的正确路径
+- 寻找方式就是在基准路径 `http://localhost:8080` 后面拼接 src 属性值`/工程名/static/img/logo.png`，得到的正是目标资源访问的正确路径
 
-  - ```html
-    <!DOCTYPE html>
-    <html>
-    <head>
-    <meta charset="UTF-8">
-    <title>Insert title here</title>
-    </head>
-    <body>
-        <!-- 绝对路径写法 -->
-        <img src="/PathTest/static/img/logo.png">
-    </body>
-    </html>
-    ```
+- ```html
+  <!DOCTYPE html>
+  <html>
+  <head>
+  <meta charset="UTF-8">
+  <title>Insert title here</title>
+  </head>
+  <body>
+      <!-- 绝对路径写法 -->
+      <img src="/工程名/static/img/logo.png">
+  </body>
+  </html>
+  ```
 
-- 绝对路径情况 3 : webapp/WEB-INF/views/view1.html 中引入 webapp/static/img/logo.png
-  - view1.html 在 WEB-INF 下，需要通过 Servlet 请求转发获得
+#### 绝对路径情况 3 : webapp/WEB-INF/views/view1.html 中引入 webapp/static/img/logo.png
+- view1.html 在 WEB-INF 下，需要通过 Servlet 请求转发获得
 
-  - ```java
-    package com.atguigu.servlet;
-    
-    import java.io.IOException;
-    
-    import javax.servlet.RequestDispatcher;
-    import javax.servlet.ServletException;
-    import javax.servlet.annotation.WebServlet;
-    import javax.servlet.http.HttpServlet;
-    import javax.servlet.http.HttpServletRequest;
-    import javax.servlet.http.HttpServletResponse;
-    
-    @WebServlet("/view1Servlet")
-    public class View1Servlet extends HttpServlet {
-    	@Override
-    	protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-    		RequestDispatcher requestDispatcher = req.getRequestDispatcher("WEB-INF/views/view1.html");
-    		requestDispatcher.forward(req, resp);
-    	}
+- ```java
+  package com.atguigu.servlet;
+  
+  import java.io.IOException;
+  
+  import javax.servlet.RequestDispatcher;
+  import javax.servlet.ServletException;
+  import javax.servlet.annotation.WebServlet;
+  import javax.servlet.http.HttpServlet;
+  import javax.servlet.http.HttpServletRequest;
+  import javax.servlet.http.HttpServletResponse;
+  
+  @WebServlet("/view1Servlet")
+  public class View1Servlet extends HttpServlet {
+    @Override
+    protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+      RequestDispatcher requestDispatcher = req.getRequestDispatcher("WEB-INF/views/view1.html");
+      requestDispatcher.forward(req, resp);
     }
-    ```
+  }
+  ```
 
-  - 访问 view1.html 的 url 为 :  `http://localhost:8080/PathTest/view1Servlet`
+- 访问 view1.html 的 url 为 :  `http://localhost:8080/工程名/view1Servlet`
 
-  - 绝对路径的基准路径为 :  `http://localhost:8080`
+- 绝对路径的基准路径为 :  `http://localhost:8080`
 
-  - 要获取的目标资源 url 为 :  `http://localhost:8080/PathTest/static/img/logo.png`
+- 要获取的目标资源 url 为 :  `http://localhost:8080/工程名/static/img/logo.png`
 
-  - view1.html 中定义的了  : `<img src="/PathTest/static/img/logo.png">`
+- view1.html 中定义的了  : `<img src="/工程名/static/img/logo.png">`
 
-  - 寻找方式就是在基准路径 `http://localhost:8080` 后面拼接 src 属性值 `/PathTest/static/img/logo.png`，得到的正是目标资源访问的正确路径
+- 寻找方式就是在基准路径 `http://localhost:8080` 后面拼接 src 属性值 `/工程名/static/img/logo.png`，得到的正是目标资源访问的正确路径
 
-  - ```html
-    <!DOCTYPE html>
-    <html>
-    <head>
-    <meta charset="UTF-8">
-    <title>Insert title here</title>
-    </head>
-    <body>
-        <!-- 绝对路径写法 -->
-        <img src="/PathTest/static/img/logo.png">
-    </body>
-    </html>
-    ```
+- ```html
+  <!DOCTYPE html>
+  <html>
+  <head>
+  <meta charset="UTF-8">
+  <title>Insert title here</title>
+  </head>
+  <body>
+      <!-- 绝对路径写法 -->
+      <img src="/工程名/static/img/logo.png">
+  </body>
+  </html>
+  ```
 
 ### base 标签的使用
 
@@ -1943,22 +1966,20 @@ public class ServletA extends HttpServlet {
 
 
 ## 14.3 请求转发中的路径问题
-
-> 目标 : 由 x/y/servletB 请求转发到 a/b/c/test.html
+> 目标 : 由 `x/y/servletB` 请求转发到 `a/b/c/test.html`
 
 ### 相对路径写法
-
-+ 访问 ServletB 的 url 为 :  `http://localhost:8080/PathTest/x/y/servletB`
++ 访问 ServletB 的 url 为 :  `http://localhost:8080/工程名/x/y/servletB`
 
 + 当前资源为 :  servletB
 
-+ 当前资源的所在路径为 : `http://localhost:8080/PathTest/x/y/`
++ 当前资源的所在路径为 : `http://localhost:8080/工程名/x/y/`
 
-+ 要获取的目标资源 url 为 :  `http://localhost:8080/PathTest/a/b/c/test.html`
++ 要获取的目标资源 url 为 :  `http://localhost:8080/工程名/a/b/c/test.html`
 
 + ServletA请求转发路径 :  `../../a/b/c/test/html`
 
-+ 寻找方式就是在当前资源所在路径 `http://localhost:8080/PathTest/x/y/`后拼接 `../../a/b/c/test/html`，形成 `http://localhost:8080/PathTest/x/y/../../a/b/c/test/html` 每个 ../ 抵消一层目录，正好是目标资源正常获取的 url `http://localhost:8080/PathTest/a/b/c/test/html`
++ 寻找方式就是在当前资源所在路径 `http://localhost:8080/工程名/x/y/`后拼接 `../../a/b/c/test/html`，形成 `http://localhost:8080/工程名/x/y/../../a/b/c/test/html` 每个 ../ 抵消一层目录，正好是目标资源正常获取的 url `http://localhost:8080/工程名/a/b/c/test/html`
 
   ``` java
   package com.atguigu.servlet;
@@ -1986,9 +2007,9 @@ public class ServletA extends HttpServlet {
 
 + 请求转发只能转发到项目内部的资源，其绝对路径无需添加项目上下文路径
 
-+ 请求转发绝对路径的基准路径相当于 `http://localhost:8080/PathTest`
++ 请求转发绝对路径的基准路径相当于 `http://localhost:8080/工程名`
 
-+ 在项目上下文路径为缺省值时，也无需改变，直接以 / 开头即可
++ 在项目上下文路径为缺省值时，也无需改变，直接以 `/` 开头即可
 
   ```java
   package com.atguigu.servlet;
@@ -2014,9 +2035,9 @@ public class ServletA extends HttpServlet {
 
 ### 目标资源内相对路径处理
 
-+ 此时需要注意，请求转发是服务器行为，浏览器不知道，地址栏不变化，相当于我们访问 test.html 的路径为`http://localhost:8080/PathTest/x/y/servletB`
++ 此时需要注意，请求转发是服务器行为，浏览器不知道，地址栏不变化，相当于我们访问 test.html 的路径为`http://localhost:8080/工程名/x/y/servletB`
 
-+ 那么此时 test.html 资源的所在路径就是 `http://localhost:8080/PathTest/x/y/` 所以 test.html 中相对路径要基于该路径编写，如果使用绝对路径则不用考虑
++ 那么此时 test.html 资源的所在路径就是 `http://localhost:8080/工程名/x/y/` 所以 test.html 中相对路径要基于该路径编写，如果使用绝对路径则不用考虑
 
   ``` html
   <!DOCTYPE html>
@@ -2027,11 +2048,11 @@ public class ServletA extends HttpServlet {
   </head>
   <body>
       <!--
-  		当前资源路径是     http://localhost:8080/PathTest/x/y/servletB
-          当前资源所在路径是  http://localhost:8080/PathTest/x/y/
+  		当前资源路径是     http://localhost:8080/工程名/x/y/servletB
+          当前资源所在路径是  http://localhost:8080/工程名/x/y/
           目标资源路径=所在资源路径+src属性值 
-  		http://localhost:8080/PathTest/x/y/../../static/img/logo.png
-          http://localhost:8080/PathTest/static/img/logo.png
+  		http://localhost:8080/工程名/x/y/../../static/img/logo.png
+          http://localhost:8080/工程名/static/img/logo.png
   		得到目标路径正是目标资源的访问路径	
       -->
   <img src="../../static/img/logo.png">
@@ -2040,7 +2061,6 @@ public class ServletA extends HttpServlet {
   ```
 
 # 15. MVC 架构模式
-
 >  MVC（Model View Controller）是软件工程中的一种**`软件架构模式`**，它把软件系统分为**`模型`**、**`视图`**和**`控制器`**三个基本部分。用一种业务逻辑、数据、界面显示分离的方法组织代码，将业务逻辑聚集到一个部件里面，在改进和个性化定制界面及用户交互的同时，不需要重新编写业务逻辑。
 
 + **M**：Model 模型层，具体功能如下
@@ -2069,13 +2089,8 @@ public class ServletA extends HttpServlet {
   1. web目录下的视图资源 html、css、js、img 等
   2. 前端工程化后，在后端项目中已经不存在了
 
-**非前后端分离的 MVC**
-
+### 非前后端分离的 MVC
 ![1690349913931](images/1690349913931.png)
 
-前后端分离的 MVC
-
+### 前后端分离的 MVC
 ![1683363039636](images/1683363039636-1690349401673.png)
-
-
-
