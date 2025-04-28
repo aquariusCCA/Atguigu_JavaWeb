@@ -1,22 +1,20 @@
-# Servlet 简介
+# 1. Servlet 简介
 
-## 动态资源和静态资源
+## 1.1 动态资源和静态资源
+- **静态资源:** 无需在程序运行时通过代码运行生成的资源，在程序运行之前就写好的资源，例如 : html、css、js img、音频文件和视频文件。
 
-- 静态资源 : 无需在程序运行时通过代码运行生成的资源，在程序运行之前就写好的资源，例如 : html、css、js img、音频文件和视频文件。
-
-+ 动态资源 : 需要在程序运行时通过代码运行生成的资源，在程序运行之前无法确定的数据，运行时动态生成，例如 : Servlet、Thymeleaf ...。
+- **动态资源:** 需要在程序运行时通过代码运行生成的资源，在程序运行之前无法确定的数据，运行时动态生成，例如 : Servlet、Thymeleaf ...。
 
 > 动态资源指的不是视图上的动画效果或者是简单的人机交互效果
 
-- 生活举例 : 去蛋糕店买蛋糕
-  - 直接买柜台上已经做好的  : 静态资源
-  - 和柜员说要求后现场制作  : 动态资源
+- 生活举例: 去蛋糕店买蛋糕
+  - 直接买柜台上已经做好的: 静态资源
+  - 和柜员说要求后现场制作: 动态资源
 
-## Servlet 简介
+## 1.2 Servlet 简介
+> **Servlet(server applet)** 是运行在服务端(tomcat)的 Java小程序，是 sun 公司提供一套定义动态资源规范；从代码层面上来讲 Servlet 就是一个接口
 
-> Servlet  (server applet) 是运行在服务端(tomcat)的 Java小程序，是 sun 公司提供一套定义动态资源规范；从代码层面上来讲 Servlet 就是一个接口
-
-+ 用来接收、处理客户端请求、响应给浏览器的动态资源。在整个 Web 应用中，Servlet 主要负责接收处理请求、协同调度功能以及响应数据。我们可以把 Servlet 称为 Web 应用中的**控制器**。
++ 用来接收、处理客户端请求、响应给浏览器的动态资源。在整个 Web 应用中，Servlet 主要负责接收处理请求、协同调度功能以及响应数据。我们可以把 Servlet 称为 Web 应用中的 **控制器**。
 
 <img src="images/1681544428055.png" alt="1681544428055" style="zoom:50%;" />
 
@@ -27,35 +25,32 @@
 
 ![1681699577344](images/1681699577344.png)
 
-# 第一個 Servlet 程序
+# 2. 第一個 Servlet 程序
+## 2.1 步驟:
+- **Step1:** 编写一个类去实现 `Servlet` 接口。
+- **Step2:** 实现 `service` 方法，处理请求并响应数据。
+- **Step3:** 到 `web.xml` 中去配置 `servlet` 程序的访问地址。
 
-- 步驟 :
+## 2.2 注意點
+- **Servlet** 是運行在服務器上面的，所有服務器的東西都需要一個訪問地址，所以說 **Servlet** 也是需要一個訪問地址。
 
-  - 1、编写一个类去实现 Servlet 接口。
-  - 2、实现 service 方法，处理请求并响应数据。
-  - 3、到 web.xml 中去配置 servlet 程序的访问地址。
+- **service()** 方法是專門來處理請求和響應的，也就是你只要訪問 **Servlet** 程序就會自動的執行這個方法。
 
-- 注意點
+- 寫好 **Servlet** 程序之後，必須到 `web.xml` 中去配置，否則服務器是不知道這個 Servlet 程序的。
 
-  - Servlet 是運行在服務器上面的, 所有服務器的東西都需要一個訪問地址 所以說 Servlet 也是需要一個訪問地址。
-
-  - service() 方法是專門來處理請求和響應的，也就是你只要訪問 Servlet 程序就會自動的執行這個方法。
-
-  - 寫好 Servlet 程序之後，必須到 web.xml 中去配置，否則服務器是不知道這個 Servlet 程序的。
-
-  - ```xml
-    <!-- 配置 servlet 程序 -->
-    <servlet>
-        <servlet-name>給Servlet程序取別名</servlet-name>
-        <servlet-class>Servlet程序的全類名</servlet-class>
-    </servlet>
-    
-    <!-- 給 servlet 程序配置訪問地址 -->
-    <servlet-mapping>
-        <servlet-name>使用這個地址的Servlet的別名</servlet-name>
-        <url-pattern>配置訪問地址</url-pattern>
-    </servlet-mapping>
-    ```
+- ```xml
+  <!-- 配置 servlet 程序 -->
+  <servlet>
+      <servlet-name>給Servlet程序取別名</servlet-name>
+      <servlet-class>Servlet程序的全類名</servlet-class>
+  </servlet>
+  
+  <!-- 給 servlet 程序配置訪問地址 -->
+  <servlet-mapping>
+      <servlet-name>使用這個地址的Servlet的別名</servlet-name>
+      <url-pattern>配置訪問地址</url-pattern>
+  </servlet-mapping>
+  ```
 
 ```java
 package com.atguigu.servlet;
@@ -124,21 +119,17 @@ public class HelloServlet implements Servlet{
 </servlet-mapping>
 ```
 
-# Servlet 程序常見的錯誤
-
-**常见错误 1：url-pattern 中配置的路径没有以斜杠打头 :**
-
+## 2.3 Servlet 程序常見的錯誤
+### 常见错误 1：url-pattern 中配置的路径没有以斜杠打头 :
 ![](images\常见错误1.png)
 
-**常见错误 2：servlet-name 配置的值不存在：**
-
+### 常见错误 2：servlet-name 配置的值不存在：
 ![](images\常见错误2.png)
 
-**常见错误 3：servlet-class 标签的全类名配置错误：**
-
+### 常见错误 3：servlet-class 标签的全类名配置错误：
 ![](images\常见错误3.png)
 
-# url 地址如何定位到 Servlet 程序去訪問
+## 2.4 url 地址如何定位到 Servlet 程序去訪問
 
 ![](images\url地址如何定位到Servlet程序.png)
 
@@ -151,9 +142,9 @@ public class HelloServlet implements Servlet{
 5. 通過 <url-pattern> 標籤 找到這個 Servlet 程序的名稱
 6. 通過 Servlet 程序的名稱找到全類名路徑
 
-# 請求的分發處理
+# 3. 請求的分發處理
 
-**首先創建一個 a.html，創建用于向指定的 Servlet 发送 POST 请求的表单 :**
+## 3.1 首先創建一個 a.html，創建用于向指定的 Servlet 发送 POST 请求的表单 :
 
 ```html
 <!DOCTYPE html>
@@ -170,7 +161,7 @@ public class HelloServlet implements Servlet{
 </html>
 ```
 
-**在 service() 處理請求 :**
+## 3.2 在 service() 處理請求 :
 
 ```java
 // service方法是专门用来处理请求和响应的
@@ -191,8 +182,7 @@ public void service(ServletRequest servletRequest, ServletResponse servletRespon
 }
 ```
 
-**優化之後 :**
-
+## 3.3 優化之後 :
 ```java
 // 做get请求的操作
 public void doGet() {
@@ -222,15 +212,14 @@ public void service(ServletRequest servletRequest, ServletResponse servletRespon
 }
 ```
 
-# 通過繼承 HttpServlet 類實現 Servlet 程序 
-
+# 4. 通過繼承 HttpServlet 類實現 Servlet 程序 
 > 一般在实际项目开发中，都是使用继承 HttpServlet 类的方式去实现 Servlet 程序。
 
-1、编写一个类去继承 HttpServlet 類
+1. 编写一个类去继承 HttpServlet 類
 
-2、根据业务需要重写 doGet 或 doPost 方法
+2. 根据业务需要重写 doGet 或 doPost 方法
 
-3、到 web.xml 中的配置 Servlet 程序的访问地址
+3. 到 web.xml 中的配置 Servlet 程序的访问地址
 
 ```java
 package com.atguigu.servlet;
@@ -268,9 +257,8 @@ public class HelloServlet2 extends HttpServlet {
 </servlet-mapping>
 ```
 
-**優化之後 :**
-
-一般來說 Servlet 可以只在實作 doGet() 或 doPost() 之一即可，其程式碼原理其實沒有甚麼不同，差異只在 doPost() 能接受的輸入資料量比較大
+## 4.2 優化之後 :
+> 一般來說 Servlet 可以只在實作 `doGet()` 或 `doPost()` 之一即可，其程式碼原理其實沒有甚麼不同，差異只在 `doPost()` 能接受的輸入資料量比較大
 
 ```java
 package com.atguigu.servlet;
@@ -297,18 +285,16 @@ public class HelloServlet2 extends HttpServlet {
 }
 ```
 
-# Servlet 的生命週期
-
-## 生命周期简介
-
-- 什么是 Servlet 的生命周期
+# 5. Servlet 的生命週期
+## 5.1 生命周期简介
+- **什么是 Servlet 的生命周期 ?**
   - 应用程序中的对象不仅在空间上有层次结构的关系，在时间上也会因为处于程序运行过程中的不同阶段而表现出不同状态和不同行为  →  这就是对象的生命周期。
   - 简单的叙述生命周期，就是对象在容器中从开始创建到销毁的过程。
 
-- Servlet 容器
+- **Servlet 容器**
   - Servlet 对象是 Servlet 容器创建的，生命周期方法都是由容器(目前我们使用的是Tomcat)调用的。这一点和我们之前所编写的代码有很大不同。在今后的学习中我们会看到，越来越多的对象交给容器或框架来创建，越来越多的方法由容器或框架来调用，开发人员要尽可能多的将精力放在业务逻辑的实现上。
 
-**Servlet 主要的生命周期执行特点**
+## 5.2 Servlet 主要的生命周期执行特点
 
 | 生命周期 | 对应方法                                                  | 执行时机               | 执行次数 |
 | -------- | --------------------------------------------------------- | ---------------------- | -------- |
@@ -317,19 +303,21 @@ public class HelloServlet2 extends HttpServlet {
 | 处理服务 | service(HttpServletRequest req, HttpServletResponse resp) | 每次请求               | 多次     |
 | 销毁     | destory()                                                 | 容器关闭               | 1        |
 
-- 執行順序
+- **執行順序**
   - 在第一次訪問的時候創建 Servlet 程序會調用 Servlet 構造器方法、init 初始化方法。
-  - 執行 service() 方法 (每次訪問都會調用)。
-  - 執行 destory() 銷毀方法 (在 web 工程停止的時候調用)。
+  - 執行 `service()` 方法 (每次訪問都會調用)。
+  - 執行 `destory()` 銷毀方法 (在 web 工程停止的時候調用)。
 
-- 構造器方法和 init()
-  - 當第一次訪問 Servlet 程序服務器就會幫我們創建 Servlet 程序，並執行構造器方法和 init() 初始化方法，所以說構造器方法和 init() 方法只會執行一次。
-- service()
-  - 每次訪問 Servlet 程序都會執行 service() 方法。
-- destory()
+- **構造器方法和 `init()`**
+  - 當第一次訪問 Servlet 程序服務器就會幫我們創建 Servlet 程序，並執行構造器方法和 `init()` 初始化方法，所以說構造器方法和 `init()` 方法只會執行一次。
+
+- **`service()`**
+  - 每次訪問 Servlet 程序都會執行 `service()` 方法。
+
+- **`destory()`**
   - 在 web 工程停止的時候調用。
 
-## 生命周期测试
+## 5.3 生命周期测试
 
 ```java
 package com.atguigu.servlet;
@@ -381,23 +369,20 @@ public class ServletLifeCycle  extends HttpServlet {
 </servlet-mapping>
 ```
 
-## 生命周期总结
-
-1. 通过生命周期测试我们发现 Servlet 对象在容器中是单例的
+## 5.4 生命周期总结
+1. 通过生命周期测试我们发现 `Servlet` 对象在容器中是单例的
 2. 容器是可以处理并发的用户请求的每个请求在容器中都会开启一个线程
 3. 多个线程可能会使用相同的 Servlet 对象，所以在 Servlet 中，我们不要轻易定义一些容易经常发生修改的成员变量
-4. load-on-startup 中定义的正整数表示实例化顺序，如果数字重复了，容器会自行解决实例化顺序问题，但是应该避免重复
-5. Tomcat 容器中，已经定义了一些随系统启动实例化的 Servlet，我们自定义的 Servlet 的 load-on-startup 尽量不要占用数字 1-5
+4. **load-on-startup** 中定义的正整数表示实例化顺序，如果数字重复了，容器会自行解决实例化顺序问题，但是应该避免重复
+5. Tomcat 容器中，已经定义了一些随系统启动实例化的 Servlet，我们自定义的 Servlet 的 **load-on-startup** 尽量不要占用数字 1-5
 
-## Servlet Conrainer 的一般執行步驟
-
+## 5.5 Servlet Conrainer 的一般執行步驟
 1. 當 Servlet 第一次被客戶端請求時，服務器會載入 Servlet，建立實體。
-2. 呼叫 Servlet 的 init ( ) 方法，以進行 Servlet 的初始化工作
-3. 呼叫 Servlet 的 service ( ) 方法，處理所有的請求
-4. 當 container 關閉時，會呼叫每一個 Servlet 的 destroy ( ) 方法
+2. 呼叫 Servlet 的 `init()` 方法，以進行 Servlet 的初始化工作
+3. 呼叫 Servlet 的 `service()` 方法，處理所有的請求
+4. 當 container 關閉時，會呼叫每一個 Servlet 的 `destroy()` 方法
 
-**說明 :**
-
+### 說明 :
 - 當 Servlet Container 收到呼叫某個 Servlet 的請求時，會先檢查該 Servlet 是否已經載入到記憶體當中，如果還沒有則 Container 會使用類加載器載入該 Servlet，接著啟動該 Servlet 的構造器以建立新的類別實體
 
 - 此時 Servlet 已被載入到記憶體當中，準備開始服務，但在任何請求被處理之前，Container 會先呼叫 Servlet 的 init( ) 方法，利用此方法預先建立好 Servlet 在處理請求的過程中，所需要的所有必要工作，如建立資料庫連線，自身的初始化參數 ... 等
@@ -406,37 +391,31 @@ public class ServletLifeCycle  extends HttpServlet {
 
 - Servlet Unloading(卸載) 的發生時機有 3 
 
-  1 ) Servlet Container Shutdwon 前
+  1) Servlet Container Shutdwon 前
 
-  2 ) 管理者以系統工具要求時
+  2) 管理者以系統工具要求時
 
-  3 ) 發生 Servlet Reloading 時 (更改Servlet)
+  3) 發生 Servlet Reloading 時 (更改Servlet)
 
   而 Servlet Container 會在 Servlet 卸載之前，先完成所有等待處理的請求之後，才主動呼叫該 Servlet 的 destroy( ) 方法
 
 > 延伸閱讀 : [為什麼要有 Servlet ，什麼是 Servlet 容器，什麼是 Web 容器？](https://iter01.com/567716.html#google_vignette)
 
-# 整個 Servlet 的繼承體系
+# 6. 整個 Servlet 的繼承體系
+![](images/Servlet%20的繼承體系.png)
 
-![](images\Servlet 的繼承體系.png)
+- HttpServlet : 繼承於 GenericServelt 類，並實現了 `service()` 方法，並實現了請求的分發處理
 
-- HttpServlet : 繼承於 GenericServelt 類，並實現了 service()方法，並實現了請求的分發處理
-
-  - ![](images\HttpServlet.png)
-
-- 一個 Servlet 程序應該繼承自 HttpServlet 類別，並覆寫其 doGet() 或是 doPost() 方法
+- 一個 Servlet 程序應該繼承自 HttpServlet 類別，並覆寫其 `doGet()` 或是 `doPost()` 方法
 
 - 當服務器收到送往此 Servlet 程序的 request 請求時 :
+  - 如為 get 請求  →  服務器會自動呼叫其 `doGet()` 方法
+  - 如為 post 請求  →  服務器會自動呼叫其 `doPost()` 方法
+  - 並傳入一個 `HttpServletRequest` 和一個 `HttpServletResponse` 介面型態的物件
 
-  - 如為 get 請求  →  服務器會自動呼叫其 doGet() 方法
-  - 如為 post 請求  →  服務器會自動呼叫其 doPost() 方法
-  - 並傳入一個 HttpServletRequest 和一個 HttpServletResponse 介面型態的物件
+- 從父類別 `HttpServlet` 繼承而來的 `doGet()` 或是 `doPost()` 方法，其原預設都是回傳錯誤訊息
 
-- 從父類別 HttpServlet 繼承而來的 doGet() 或是 doPost() 方法，其原預設都是回傳錯誤訊息
-
-
-## Servlet 接口及方法说明
-
+## 6.1 Servlet 接口及方法说明
 + Servlet 规范接口，所有的 Servlet 必须实现(這是一個 interface)
   + public void init(ServletConfig config) throws ServletException;   
     + 初始化方法，容器在构造 Servlet 对象后，自动调用的方法，容器负责实例化一个 ServletConfig 对象，并在调用该方法时传入
@@ -451,7 +430,7 @@ public class ServletLifeCycle  extends HttpServlet {
   + public void destroy();
     + Servlet 实例在销毁之前调用的方法
 
-## GenericServlet 抽象类
+## 6.2 GenericServlet 抽象类
 
 > GenericServlet 抽象类是对 Servlet 接口一些固定功能的粗糙实现，以及对 service 方法的再次抽象声明，并定义了一些其他相关功能方法
 
@@ -483,7 +462,7 @@ public class ServletLifeCycle  extends HttpServlet {
 + public String getServletName() 
   + 获取 ServletName 的方法
 
-## HttpServlet 抽象类
+## 6.3 HttpServlet 抽象类
 
 > abstract class HttpServlet extends GenericServlet : HttpServlet 抽象类，除了基本的实现以外，增加了更多的基础功能
 
@@ -514,8 +493,7 @@ public class ServletLifeCycle  extends HttpServlet {
   + 对应不同请求方式的处理方法
   + 除了 doOptions 和 doTrace 方法，其他的 doXXX 方法都在故意响应错误信息
 
-## 自定义 Servlet
-
+## 6.4 自定义 Servlet
 > 继承关系图解
 
 ![1682299663047](images/1682299663047.png)
@@ -524,11 +502,10 @@ public class ServletLifeCycle  extends HttpServlet {
   + 要么重写 service 方法
   + 要么重写 doGet/doPost 方法
 
-# Servlet 小練習
-
+# 7. Servlet 小練習
 > 校验注册时，用户名是否被占用，通过客户端向一个 Servlet 发送请求，携带 username，如果用户名是'atguigu'，则向客户端响应 NO，如果是其他响应YES
 
-**开发一个 form 表单，向 servlet 发送一个 get 请求并携带 username 参数 :**
+## 7.1 开发一个 form 表单，向 servlet 发送一个 get 请求并携带 username 参数 :
 
 ```html
 <!DOCTYPE html>
@@ -546,7 +523,7 @@ public class ServletLifeCycle  extends HttpServlet {
 </html>
 ```
 
-**开发一个 UserServlet**
+## 7.2 开发一个 UserServlet
 
 ```java
 package com.atguigu.servlet;
@@ -587,7 +564,7 @@ public class UserServlet extends HttpServlet {
 + Servlet 对象的生命周期(创建、初始化、处理服务、销毁)是由 tomcat 管理的，无需我们自己創建
 + HttpServletRequest、HttpServletResponse 两个对象也是有 tomcat 负责转换，在调用 service 方法时传入给我们用的。
 
-**在 web.xml 为 UseServlet 配置请求的映射路径**
+## 7.3 在 web.xml 为 UseServlet 配置请求的映射路径
 
 ```xml
 <servlet>
@@ -623,19 +600,17 @@ public class UserServlet extends HttpServlet {
   + /a/*     匹配所有以 a 前缀的映射路径
   + *.action 匹配所有以 action 为后缀的映射路径
 
-**映射关系图 :**
+## 7.4 映射关系图 :
 
 ![1681550398774](images/1681550398774.png)
 
-# ServletConfig 和 ServletContext
-
-## ServletConfig 的使用
-
+# 8. ServletConfig 和 ServletContext
+## 8.1 ServletConfig 的使用
 > 一個 Servlet 對應一個 ServletConfig，封裝的是當前 Servlet 的配置信息
 
-- ServletConfig 是什么
+- **ServletConfig 是什么**
   - 为 Servlet 提供初始配置参数的一种对象，每个 Servlet 都有自己独立唯一的 ServletConfig 对象
-  - 容器会为每个 Servlet 实例化一个 ServletConfig 对象，并通过 Servlet 生命周期的 init 方法传入给Servlet 作为属性
+  - 容器会为每个 Servlet 实例化一个 ServletConfig 对象，并通过 Servlet 生命周期的 init 方法传入给 Servlet 作为属性
 
 - ServletConfig 类从类名上来看，就知道是 Servlet 程序的配置信息类。
 - Servlet 程序和 ServletConfig 对象都由 Tomcat 负责建，我们负责使用。
@@ -669,7 +644,7 @@ public interface ServletConfig {
 
 > ServletConfig 怎么用，测试代码如下
 
-**定义 Servlet**
+### 8.1.1 定义 Servlet
 
 ```java
 package com.atguigu.servlet;
@@ -731,7 +706,7 @@ public class ServletB extends HttpServlet {
 }
 ```
 
-**配置 Servlet**
+### 8.1.2 配置 Servlet
 
 ``` xml
 <servlet>
@@ -779,7 +754,7 @@ public class ServletB extends HttpServlet {
 </servlet-mapping>
 ```
 
-## ServletConfig 補充說明
+## 8.2 ServletConfig 補充說明
 
 - 每一個 Servlet 程序只對應自己的 ServletConfig ; 不可以獲取到別人的 ServletConfig，舉例 : HelloServlet2 不能獲取到 HelloServlet。
 
@@ -814,7 +789,7 @@ public class ServletB extends HttpServlet {
     }
     ```
 
-## ServletContext 的使用
+## 8.3 ServletContext 的使用
 
 - ServletContext 是什么
   - ServletContext 对象有称呼为上下文对象，或者叫应用域对象(后面统一讲解域对象)
@@ -881,7 +856,7 @@ public class ServletA extends HttpServlet {
 }
 ```
 
-## ServletContext 其他重要API
+## 8.4 ServletContext 其他重要API
 
 ### 获取资源的真实路径
 
@@ -912,10 +887,9 @@ String contextPath = servletContext.getContextPath();
 | Object getAttribute(String key);             | 获得域中的数据      |
 | void removeAttribute(String key);            | 移除域中的数据      |
 
-# HttpServletRequest
+# 9. HttpServletRequest
 
-## 简介
-
+## 9.1 简介
 - HttpServletRequest 是什么
   - HttpServletRequest 是一个接口，其父接口是 ServletRequest
   - HttpServletRequest 是 Tomcat 将请求报文转换封装而来的对象，在 Tomcat 调用 service 方法时传入
@@ -923,10 +897,8 @@ String contextPath = servletContext.getContextPath();
 
 ![1681699577344](images/1681699577344.png)
 
-## 常见 API
-
-**获取请求行信息相关(方式、请求的url、协议及版本)**
-
+## 9.2 常见 API
+### 获取请求行信息相关(方式、请求的url、协议及版本)
 | API                           | 功能解释                       |
 | ----------------------------- | ------------------------------ |
 | StringBuffer getRequestURL(); | 获取客户端请求的url            |
@@ -938,16 +910,14 @@ String contextPath = servletContext.getContextPath();
 | String getProtocol();         | 获取请求协议及版本号           |
 | String getMethod();           | 获取请求方式                   |
 
-**获得请求头信息相关**
-
+### 获得请求头信息相关
 | API                                   | 功能解释               |
 | ------------------------------------- | ---------------------- |
 | String getHeader(String headerName);  | 根据头名称获取请求头   |
 | Enumeration<String> getHeaderNames(); | 获取所有的请求头名字   |
 | String getContentType();              | 获取content-type请求头 |
 
-**获得请求参数相关**
-
+### 获得请求参数相关
 | API                                                     | 功能解释                             |
 | ------------------------------------------------------- | ------------------------------------ |
 | String getParameter(String parameterName);              | 根据请求参数名获取请求单个参数值     |
@@ -958,8 +928,7 @@ String contextPath = servletContext.getContextPath();
 | ServletInputStream getInputStream() throws IOException; | 获取读取请求体的字节输入流           |
 | int getContentLength();                                 | 获得请求体长度的字节数               |
 
-**其他 API**
-
+### 其他 API
 | API                                          | 功能解释                    |
 | -------------------------------------------- | --------------------------- |
 | String getServletPath();                     | 获取请求的Servlet的映射路径 |
@@ -968,10 +937,8 @@ String contextPath = servletContext.getContextPath();
 | HttpSession getSession();                    | 获取Session对象             |
 | void setCharacterEncoding(String encoding) ; | 设置请求体字符集            |
 
-# HttpServletResponse
-
-## 简介
-
+# 10. HttpServletResponse
+## 10.1 简介
 - HttpServletResponse 是什么
   - HttpServletResponse 是一个接口，其父接口是 ServletResponse
   - HttpServletResponse 是 Tomcat 预先创建的，在 Tomcat 调用 service 方法时传入
@@ -979,31 +946,26 @@ String contextPath = servletContext.getContextPath();
 
 ![1681699577344](images/1681699577344.png)
 
-## 常见 API
-
-**设置响应行相关**
-
+## 10.2 常见 API
+### 设置响应行相关
 | API                        | 功能解释       |
 | -------------------------- | -------------- |
 | void setStatus(int  code); | 设置响应状态码 |
 
-**设置响应头相关**
-
+### 设置响应头相关
 | API                                                    | 功能解释                                         |
 | ------------------------------------------------------ | ------------------------------------------------ |
 | void setHeader(String headerName, String headerValue); | 设置/修改响应头键值对                            |
 | void setContentType(String contentType);               | 设置content-type响应头及响应字符集(设置MIME类型) |
 
-**设置响应体相关**
-
+### 设置响应体相关
 | API                                                       | 功能解释                                                |
 | --------------------------------------------------------- | ------------------------------------------------------- |
 | PrintWriter getWriter() throws IOException;               | 获得向响应体放入信息的字符输出流                        |
 | ServletOutputStream getOutputStream() throws IOException; | 获得向响应体放入信息的字节输出流                        |
 | void setContentLength(int length);                        | 设置响应体的字节长度,其实就是在设置content-length响应头 |
 
-**其他 API**
-
+### 其他 API
 | API                                                          | 功能解释                                            |
 | ------------------------------------------------------------ | --------------------------------------------------- |
 | void sendError(int code, String message) throws IOException; | 向客户端响应错误信息的方法,需要指定响应码和响应信息 |
@@ -1016,8 +978,7 @@ String contextPath = servletContext.getContextPath();
   - 可以这样理解 : 前后端交互数据时，告诉对方发给对方的是 html、css、js、图片、声音、视频、.....
   - tomcat/conf/web.xml 中配置了常见文件的拓展名和 MIMIE 类型的对应关系
 
-**常见的 MIME 类型举例如下**
-
+### 常见的 MIME 类型举例如下
 | 文件拓展名                     | MIME类型               |
 | ------------------------------ | ---------------------- |
 | .html                          | text/html              |
@@ -1028,13 +989,12 @@ String contextPath = servletContext.getContextPath();
 | .mp4                           | video/mp4              |
 | .m1v、.m1v、.m2v、.mpe、...... | video/mpeg             |
 
-# Servlet 注解方式配置
+# 11. Servlet 注解方式配置
 
-## @WebServlet 注解源码
-
+## 11.1 @WebServlet 注解源码
 > 官方 JAVAEEAPI 文档下载地址 : [Java EE - Technologies (oracle.com)](https://www.oracle.com/java/technologies/javaee/javaeetechnologies.html#javaee8) 
 
-**@WebServlet注解的源码阅读**
+### @WebServlet注解的源码阅读
 
 ``` java
 package jakarta.servlet.annotation;
@@ -1128,8 +1088,7 @@ public @interface WebServlet {
 }
 ```
 
-## @WebServlet 注解使用
-
+## 11.2 @WebServlet 注解使用
 > 使用 @WebServlet 注解替换 Servlet 配置
 
 ```java
@@ -1157,10 +1116,8 @@ public class UserServlet  extends HttpServlet {
 }
 ```
 
-# 请求转发和响应重定向
-
-## 概述
-
+# 12. 请求转发和响应重定向
+## 12.1 概述
 > 什么是请求转发和响应重定向
 
 + 请求转发和响应重定向是 web 应用中间接访问项目资源的两种手段，也是 Servlet 控制页面跳转的两种手段
@@ -1168,10 +1125,10 @@ public class UserServlet  extends HttpServlet {
 + 请求转发通过 HttpServletRequest 实现，响应重定向通过 HttpServletResponse 实现
 
 + 请求转发生活举例 : 张三找李四借钱，李四没有，李四找王五，让王五借给张三
+
 + 响应重定向生活举例 : 张三找李四借钱，李四没有，李四让张三去找王五，张三自己再去找王五借钱
 
-## 请求转发
-
+## 12.2 请求转发
 > 请求转发运行逻辑图
 
 ![1682321228643](images/1682321228643.png)
@@ -1186,10 +1143,7 @@ public class UserServlet  extends HttpServlet {
   - 请求转发可以转发给 WEB-INF 下受保护的资源
   - 请求转发不能转发到本项目以外的外部资源
 
-![1682323740343](images\螢幕擷取畫面 2024-05-03 195736.png)
-
-**ServletForward1**
-
+### ServletForward1
 ``` java
 package com.atguigu.servlet;
 
@@ -1229,8 +1183,7 @@ public class ServletForward1 extends HttpServlet {
 }
 ```
 
-**ServletForward2**
-
+### ServletForward2
 ``` java
 package com.atguigu.servlet;
 
@@ -1258,14 +1211,12 @@ public class ServletForward2 extends HttpServlet {
 }
 ```
 
-**打开浏览器，输入以下 url 测试**
-
+### 打开浏览器，输入以下 url 测试
 ``` http
 http://localhost:8080/Servlet/servletForward1?username=atguigu
 ```
 
-## 响应重定向
-
+## 12.3 响应重定向
 **响应重定向运行逻辑图**
 
 ![1682322460011](images/1682322460011.png)
@@ -1280,12 +1231,7 @@ http://localhost:8080/Servlet/servletForward1?username=atguigu
   - 重定向不可以到给 WEB-INF 下受保护的资源
   - 重定向可以到本项目以外的外部资源
 
-![1682323740343](images\螢幕擷取畫面 2024-05-03 195736.png)
-
-
-
-**ServletForward1**
-
+### ServletForward1
 ``` java
 package com.atguigu.servlet;
 
@@ -1320,8 +1266,7 @@ public class ServletForward1 extends HttpServlet {
 }
 ```
 
-**ServletForward2**
-
+### ServletForward2
 ``` java
 package com.atguigu.servlet;
 
@@ -1349,15 +1294,13 @@ public class ServletForward2 extends HttpServlet {
 }
 ```
 
-**打开浏览器，输入以下 url 测试**
-
+### 打开浏览器，输入以下 url 测试
 ``` http
-http://localhost:8080/Servlet/servletForward1?username=atguigu
+http://localhost:8080/工程名/servletForward1?username=atguigu
 ```
 
-# web 乱码
-
-##  乱码问题
+# 13. web 乱码
+## 13.1 乱码问题
 
 - 乱码问题产生的根本原因是什么
   - 数据的编码和解码使用的不是同一个字符集
@@ -1372,7 +1315,7 @@ http://localhost:8080/Servlet/servletForward1?username=atguigu
 + 由上图得知，上述字符集都兼容了 ASCII
 + ASCII 中有什么  →  英文字母和一些通常使用的符号，所以这些东西无论使用什么字符集都不会乱码
 
-## HTML 乱码问题
+## 13.2 HTML 乱码问题
 
 > 当前视图文件的字符集通过<meta charset="UTF-8"> 来告知浏览器通过什么字符集来解析当前文件
 
@@ -1389,7 +1332,7 @@ http://localhost:8080/Servlet/servletForward1?username=atguigu
 </html>
 ```
 
-## 请求乱码问题
+## 13.3 请求乱码问题
 
 > 參考文章 : [Servlet中的乱码问题及解决办法](https://www.cnblogs.com/lijie0609/p/11825000.html)
 
@@ -1499,7 +1442,7 @@ username = new String(username.getBytes("iso-8859-1"), "UTF-8");
 > - 编码，即重新编排，即打散，将字符串打散后按照指定编码进行重新编排。 这里的编码使用的是 String 的 getBytes() 方法，完成的工作是：按照当前字符编码将数据打散。
 > - 解码，即解释执行，即组装，对打散的字符按照指定编码组装后进行解释执行。 这里的解码使用的是 String 的带参构造器，完成的工作是：按照原有字符编码将数据组装。该方式针对 POST 与 GET 提交方式，均起作用。
 
-## 响应乱码问题
+## 13.4 响应乱码问题
 
 > 參考文章 : [Servlet中的乱码问题及解决办法](https://www.cnblogs.com/lijie0609/p/11825000.html)
 
@@ -1595,8 +1538,7 @@ public class ResponseIOServlet extends HttpServlet {
 
 ![](images\1850571-20191109145949000-34146920.png)
 
-# 路径问题
-
+# 14. 路径问题
 + 相对路径
   + 相对路径的规则是 : 以当前资源所在的路径为出发点去寻找目标资源
   + 相对路径不以 / 开头
@@ -1615,7 +1557,7 @@ public class ResponseIOServlet extends HttpServlet {
   1. 前端代码中 href、src、action 等属性
   2. 请求转发和重定向中的路径
 
-## 前端路径问题
+## 14.1 前端路径问题
 
 **前端项目结构**
 
@@ -1935,7 +1877,7 @@ public class ForwardC extends HttpServlet {
 - Step 3 : 鼠標右擊 Tomcat，Clean 一下，重新啟動即可。
   - ![](E:\JavaWeb\筆記\images\20210115171544995.png)
 
-## 重定向中的路径问题
+## 14.2 重定向中的路径问题
 
 ### 相对路径写法
 
@@ -2000,7 +1942,7 @@ public class ServletA extends HttpServlet {
   ```
 
 
-## 请求转发中的路径问题
+## 14.3 请求转发中的路径问题
 
 > 目标 : 由 x/y/servletB 请求转发到 a/b/c/test.html
 
@@ -2097,7 +2039,7 @@ public class ServletA extends HttpServlet {
   </html>
   ```
 
-# MVC 架构模式
+# 15. MVC 架构模式
 
 >  MVC（Model View Controller）是软件工程中的一种**`软件架构模式`**，它把软件系统分为**`模型`**、**`视图`**和**`控制器`**三个基本部分。用一种业务逻辑、数据、界面显示分离的方法组织代码，将业务逻辑聚集到一个部件里面，在改进和个性化定制界面及用户交互的同时，不需要重新编写业务逻辑。
 
