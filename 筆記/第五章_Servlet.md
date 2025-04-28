@@ -1587,7 +1587,7 @@ public class ResponseIOServlet extends HttpServlet {
 
 <img src="images/1682390999417.png" style="zoom: 67%;" />
 
-### 相对路径情况分析
+### 14.1.1 相对路径情况分析
 #### 相对路径情况 1 : webapp/index.html 中引入 webapp/static/img/logo.png
 
 - ```html
@@ -1693,7 +1693,7 @@ public class ResponseIOServlet extends HttpServlet {
   </html>
   ```
 
-### 绝对路径情况分析
+### 14.1.2 绝对路径情况分析
 
 #### 绝对路径情况 1 : webapp/index.html 中引入webapp/static/img/logo.png
 - 访问 index.html 的 url 为 :  `http://localhost:8080/工程名/index.html`
@@ -1794,16 +1794,14 @@ public class ResponseIOServlet extends HttpServlet {
   </html>
   ```
 
-### base 标签的使用
-
-> base标签定义页面相对路径公共前缀
+### 14.1.3 base 标签的使用
+> HTML 裡的 `<base>` 標籤，會告訴瀏覽器：「所有的相對路徑，請以誰為基準？」
 
 + base 标签定义在 head 标签中，用于定义相对路径的公共前缀
 + base 标签定义的公共前缀只在相对路径上有效，绝对路径中无效
-+ 如果相对路径开头有 ./ 或者 ../ 修饰，则 base 标签对该路径同样无效
++ 如果相对路径开头有 `./` 或者 `../` 修饰，则 `base` 标签对该路径同样无效
 
 > index.html 和 a/b/c/test.html 以及 view1.html 中的路径处理
-
 ```html
 <!DOCTYPE html>
 <html lang="en">
@@ -1811,7 +1809,7 @@ public class ResponseIOServlet extends HttpServlet {
     <meta charset="UTF-8">
     <title>Title</title>
     <!--定义相对路径的公共前缀,将相对路径转化成了绝对路径-->
-    <base href="/PathTest/">
+    <base href="/工程名/">
 </head>
 <body>
     <img src="static/img/logo.png">
@@ -1819,9 +1817,9 @@ public class ResponseIOServlet extends HttpServlet {
 </html>
 ```
 
-### 缺省项目上下文路径
+### 14.1.4 缺省项目上下文路径
 
-**index.html**
+#### index.html
 
 ```html
 <!DOCTYPE html>
@@ -1831,13 +1829,13 @@ public class ResponseIOServlet extends HttpServlet {
 <title>Insert title here</title>
 </head>
 <body>
-	<a href="http://localhost:8080/PathTest/forwardC">请求转发：a/b/c.html</a>
+	<a href="http://localhost:8080/工程名/forwardC">请求转发：a/b/c.html</a>
 	<br />
 </body>
 </html>
 ```
 
-**c.html**
+#### c.html**
 
 ```html
 <!DOCTYPE html>
@@ -1847,7 +1845,7 @@ public class ResponseIOServlet extends HttpServlet {
 <title>Title</title>
 <!-- 
 	base 标签设置页面相对路径工作时参照的地址，href 属性就是参数的地址值。
-	<base href="http://localhost:8080/PathTest/a/b/">
+	<base href="http://localhost:8080/工程名/a/b/">
 -->
 </head>
 <body>
@@ -1859,8 +1857,7 @@ public class ResponseIOServlet extends HttpServlet {
 </html>
 ```
 
-**ForwardC**
-
+#### ForwardC
 ```java
 package com.atguigu.servlet;
 
@@ -1888,17 +1885,7 @@ public class ForwardC extends HttpServlet {
   - 项目的上下文路径是可以随意变化的
   - 一旦项目的上下文路径发生变化，所有 base 标签中的路径都需要改
 
-> 解决方案 : 将项目的上下文路径进行缺省设置，设置为 /，所有的绝对路径中就不必填写项目的上下文了，直接就是 / 开头即可
-
-#### Eclipse 如何更改 tomcat 的上下文访问路径
-
-- Step 1 : 右鍵項目  →  點擊 Properties
-  - <img src="E:\JavaWeb\筆記\images\20210115170417339.png" style="zoom:50%;" />
-
-- Step2 : 點擊 Web Project Settings  →  進行更改 Content root，輸入要更改的路徑  →  點擊 Apply   →  點擊 Apply and Close
-  - <img src="E:\JavaWeb\筆記\images\螢幕擷取畫面 2024-05-03 214207.png" style="zoom:50%;" />
-- Step 3 : 鼠標右擊 Tomcat，Clean 一下，重新啟動即可。
-  - ![](E:\JavaWeb\筆記\images\20210115171544995.png)
+> **解决方案:** 将项目的上下文路径进行缺省设置，设置为 `/`，所有的绝对路径中就不必填写项目的上下文了，直接就是 / 开头即可
 
 ## 14.2 重定向中的路径问题
 
