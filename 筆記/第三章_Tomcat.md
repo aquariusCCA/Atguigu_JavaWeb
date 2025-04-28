@@ -1022,6 +1022,10 @@ This product includes some software from The JDOM Project (http://www.jdom.org/)
 
 ![1681456161723](images/1681456161723.png)
 
+### 補充：整個動態Web工程目錄介紹
+
+![](./images/2437299-20210915153231943-2059535259.png "")
+
 # 5 WEB项目部署的方式
 > **方式1:** 直接将编译好的项目放在 webapps 目录下  (已经演示)
 
